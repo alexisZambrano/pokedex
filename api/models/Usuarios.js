@@ -16,11 +16,15 @@
               type:"string",
               defaultsTo:"123456"
           },
-          usuario:{
+          avatarUrl:{
               type:"string",
               unique:true
           },
-          avatar:{
+          avatarFd:{
+              type:"string",
+              unique:true
+          },
+          url:{
               type:"string",
               unique:true
           },
