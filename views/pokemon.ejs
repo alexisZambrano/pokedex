@@ -1,0 +1,28 @@
+<h1>Se ha autenticado como: <%- req.session.user.nombre %>  </h1>
+<img src="images/<%- req.session.user.url %>"></td>
+
+<!--CREACION DE POKEMON-->
+<h2>Ingresa tus pokemon</h2>
+<h3>Ingresa su foto</h3>
+<div>
+<% for(var i=0; i<Pokemon.length; i++) {%>
+   <img src="images/<%- Pokemon[i].url1 %>"></td>
+<% } %>
+</div>
+
+<form action="Pokemon/subirFoto" enctype="multipart/form-data" method="post">
+    <input type="file" name="perfilPokemon">
+    <input type="submit" value="Submit">
+</form>
+
+<form class="form-group center-block" action="Pokemon/subirDatos" method="post">
+    <label>Nombre</label>
+    <input class="form-control" type='string' name="nombre">
+    <label>numero</label>
+    <input class="form-control" type='integer' name="numero">
+    <label>tipo</label>
+    <input class="form-control" type='string' name="tipo">
+    <label>id entrenador</label>
+    <input class="form-control" type='string' name="entrenador">
+    <button type="submit" class="btn btn-primary" value="Submit">Guardar</button>
+</form>

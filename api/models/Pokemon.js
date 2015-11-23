@@ -18,10 +18,22 @@ module.exports = {
         },
         tipo: {
           type: 'string',
-          enum: ['electrico', 'fuego', 'hierba', 'agua', 'tierra']
+          required:true
         },
         entrenador: {
           model: 'Usuarios'
+        },
+        avatarUrl:{
+            type:"string",
+            unique:true
+        },
+        avatarFd:{
+            type:"string",
+            unique:true
+        },
+        url:{
+            type:"string",
+            unique:true
         }
 
   }

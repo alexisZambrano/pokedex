@@ -9,7 +9,7 @@ module.exports = {
 	subirFoto: function (req, res) {
 			var params = req.allParams();
 			//var deleteFd = 'C:\\Users\\Adrian\\Documents\\NODEjs\\ArchivosSesion\\assets\\images\\';
-			var deleteFd = '\\home\\fedora\\Documents\\DeberPokemon\\Pokedex\\assets\\images';
+			var deleteFd = '/home/fedora/Documents/DeberPokemon/Pokedex/assets/images/';
 			sails.log.info('Perfil: ',params.perfil);
 
 			req.file('perfil').upload({
@@ -20,7 +20,6 @@ module.exports = {
 					if (err) {
 							return res.negotiate(err);
 					}
-
 					// If no files were uploaded, respond with an error.
 					if (uploadedFiles.length === 0) {
 							return res.badRequest('No file was uploaded');

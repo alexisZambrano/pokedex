@@ -40,6 +40,9 @@ module.exports.routes = {
 },
 'get /': 'UsuariosController.home','/usuario':{
     view: 'usuario'
+},
+'/pokemon':{
+    view: 'pokemon'
 }
 
   /***************************************************************************
