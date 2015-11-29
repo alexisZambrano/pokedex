@@ -57,8 +57,6 @@ module.exports = {
 													return res.negotiate(err);
 											}
 											sails.log.info('Pokemon creado: ', createdPokemon);
-											// Response code 200
-											return res.ok('Satisfactorio :)', 'pokemon');
 									});
 					});
 			}
