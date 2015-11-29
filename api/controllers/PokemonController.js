@@ -6,91 +6,61 @@
  */
 
 module.exports = {
-	subirFoto: function (req, res) {
+	guardarPokemon: function (req, res) {
 			var params = req.allParams();
-			var deleteFd = '/home/fedora/Documents/DeberPokemon/Pokedex/assets/images/';
-			sails.log.info('PerfilPokemon: ',params.perfilPokemon);
 
-			req.file('perfilPokemon').upload({
-					// don't allow the total upload size to exceed ~10MB
-					dirname: '../../assets/images',
-					maxBytes: 10000000
-			}, function whenDone(err, uploadedFiles) {
-					if (err) {
-							return res.negotiate(err);
-					}
-					// If no files were uploaded, respond with an error.
-					if (uploadedFiles.length === 0) {
-							return res.badRequest('No file was uploaded');
-					}
+			sails.log.info('Nombre: ', params.nombre, ' FotoPokemon: ', params.fotoPokemon, ' Usuario:', req.session.user);
 
-					console.log(uploadedFiles[0]);
-					var urlImagen = uploadedFiles[0].fd.replace(deleteFd, "");
-					// Save the "fd" and the url where the avatar for a user can be accessed
-					Pokemon.update(req.session.me, {
+			if (params.nombre === undefined) {
+					sails.log.warn('Envio incorrecto de parametros.');
+					return res.badRequest('Envio incorrecto de parametros.');
 
-									// Generate a unique URL where the avatar can be downloaded.
-									avatarUrl: require('util').format('%s/user/avatar/%s', sails.getBaseUrl(), req.session.me),
+			} else {
+					var deleteFd = '/home/fedora/Documents/DeberPokemon/Pokedex/assets/images/pokemons';
+					sails.log.info('FotoPokemon: ', params.fotoPokemon);
 
-									// Grab the first file and use it's `fd` (file descriptor)
-									avatarFd: uploadedFiles[0].fd,
+					req.file('fotoPokemon').upload({
+							// don't allow the total upload size to exceed ~10MB
+							dirname: '../../assets/images/pokemons',
+							maxBytes: 10000000
+					}, function whenDone(err, uploadedFiles) {
+							if (err) {
+									return res.negotiate(err);
+							}
 
-									url1:urlImagen
-							})
-							//.exec(function (err) {
-								//	if (err) return res.negotiate(err);
-								//	req.session.user.url = urlImagen;
-								//	return res.redirect('http://localhost:1337/pokemon');
-							//});
-			});
-	},
+							// If no files were uploaded, respond with an error.
+							if (uploadedFiles.length === 0) {
+									return res.badRequest('No file was uploaded');
+							}
 
-	/**
-	 * Download avatar of the user with the specified id
-	 *
-	 * (GET /user/avatar/:id)
-	 */
-	descargarFoto: function (req, res) {
+							console.log(uploadedFiles[0]);
+							var urlImagen = uploadedFiles[0].fd.replace(deleteFd, "");
 
-			req.validate({
-					id: 'string'
-			});
+							// Save the "fd" and the url where the avatar for a user can be accessed
+							// Generate a unique URL where the avatar can be downloaded.
+							var fotoUrl = require('util').format('%s/pokemon/%s/%s', sails.getBaseUrl(), req.session.user.id, params.nombre);
+							// Grab the first file and use it's `fd` (file descriptor)
+							var fotoUrlFd = uploadedFiles[0].fd;
+							var url = urlImagen;
 
-			Pokemon.findOne(req.param('id')).exec(function (err, user) {
-					if (err) return res.negotiate(err);
-					if (!user) return res.notFound();
+							sails.log.info("urlImagen ", urlImagen);
 
-					// User has no avatar image uploaded.
-					// (should have never have hit this endpoint and used the default image)
-					if (!user.avatarFd) {
-							return res.notFound();
-					}
-
-					var SkipperDisk = require('skipper-disk');
-					var fileAdapter = SkipperDisk( /* optional opts */ );
-
-					// Stream the file down
-					fileAdapter.read(user.avatarFd)
-							.on('error', function (err) {
-									return res.serverError(err);
-							})
-							.pipe(res);
-			});
-	},
-	home: function (req, res) {
-
-			var user;
-
-			Usuarios.find()
-					.exec(function (err, results) {
-					if (err) return res.negotiate();
-
-					user = results;
-
-					return res.view('homepage', {
-							Pokemon: user,
+							Pokemon.create({
+											nombre: params.nombre,
+											dueno: req.session.user.id,
+											fotoUrl: fotoUrl,
+											fotoUrlFd: fotoUrlFd,
+											url: urlImagen
+									})
+									.exec(function (err, createdPokemon) {
+											if (err) {
+													return res.negotiate(err);
+											}
+											sails.log.info('Pokemon creado: ', createdPokemon);
+											// Response code 200
+											return res.ok('Satisfactorio :)', 'pokemon');
+									});
 					});
-			});
-
+			}
 	}
 };

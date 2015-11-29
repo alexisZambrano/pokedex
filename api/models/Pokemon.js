@@ -8,33 +8,27 @@
 module.exports = {
 
   attributes: {
-    nombre: {
-            type: "string",
-            required: true
-        },
-        numero:{
-            type:"integer",
-            required:true
-        },
-        tipo: {
-          type: 'string',
-          required:true
-        },
-        entrenador: {
-          model: 'Usuarios'
-        },
-        avatarUrl:{
-            type:"string",
-            unique:true
-        },
-        avatarFd:{
-            type:"string",
-            unique:true
-        },
-        url:{
-            type:"string",
-            unique:true
-        }
+    // Many to One
+    dueno: {
+        model: 'Usuarios'
+    },
 
+    nombre: {
+        type: 'string',
+        required: true
+    },
+
+    fotoUrl: {
+        type: "string",
+        unique: true
+    },
+    fotoFd: {
+        type: "string",
+        unique: true
+    },
+    url: {
+        type: "string",
+        unique: true
+    }
   }
 };

@@ -1,28 +1,15 @@
-<h1>Se ha autenticado como: <%- req.session.user.nombre %>  </h1>
-<img src="images/<%- req.session.user.url %>"></td>
+<div class="row">
+    <div class="col-xs-4 col-xs-offset-4">
+        <h1>Pokemon</h1>
 
-<!--CREACION DE POKEMON-->
-<h2>Ingresa tus pokemon</h2>
-<h3>Ingresa su foto</h3>
-<div>
-<% for(var i=0; i<Pokemon.length; i++) {%>
-   <img src="images/<%- Pokemon[i].url1 %>"></td>
-<% } %>
+        <p>Ingrese el nombre del pokemon:</p>
+
+        <form action="Pokemon/guardarPokemon" method="post" class="form-group" enctype="multipart/form-data">
+            <label class="control-label" for="nombre">Nombre:</label>
+            <input class="form-control" type="text" name="nombre">
+            <br>
+            <input class="form-control" type="file" name="fotoPokemon">
+            <input class="form-control btn btn-primary" type="submit" value="Guardar">
+        </form>
+    </div>
 </div>
-
-<form action="Pokemon/subirFoto" enctype="multipart/form-data" method="post">
-    <input type="file" name="perfilPokemon">
-    <input type="submit" value="Submit">
-</form>
-
-<form class="form-group center-block" action="Pokemon/subirDatos" method="post">
-    <label>Nombre</label>
-    <input class="form-control" type='string' name="nombre">
-    <label>numero</label>
-    <input class="form-control" type='integer' name="numero">
-    <label>tipo</label>
-    <input class="form-control" type='string' name="tipo">
-    <label>id entrenador</label>
-    <input class="form-control" type='string' name="entrenador">
-    <button type="submit" class="btn btn-primary" value="Submit">Guardar</button>
-</form>

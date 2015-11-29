@@ -1,8 +1,21 @@
-<h1>hola</h1>
-<h2>Lista de Usuarios</h2>
+<div class="row">
+    <h1>RESUMEN</h1>
 
-<ul>
-<% for(var i=0; i<Usuarios.length; i++) {%>
-   <li><%= Usuarios[i].nombre %></li>
-<% } %>
-</ul>
+    <h2>Usuarios y Pokemon</h2>
+
+    <ul>
+        <% for(var i = 0; i < usuarios.length; i++) { %>
+        <li><%= usuarios[i].nombre %></li>
+        <ol>
+          <div class="thumbnail" >
+            <img width=50% src="images/<%= usuarios[i].url %>">
+          </div>
+
+            <% for(var j = 0; j < usuarios[i].pokemons.length; j++) { %>
+            <div class="thumbnail" ><li><%= usuarios[i].pokemons[j].nombre %> <br><img
+                            width=50% src="images/pokemons/<%= usuarios[i].pokemons[j].url %>"></li></div>
+            <% } %>
+        </ol>
+        <% } %>
+    </ul>
+</div>

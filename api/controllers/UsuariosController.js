@@ -8,9 +8,8 @@
 module.exports = {
 	subirFoto: function (req, res) {
 			var params = req.allParams();
-			//var deleteFd = 'C:\\Users\\Adrian\\Documents\\NODEjs\\ArchivosSesion\\assets\\images\\';
 			var deleteFd = '/home/fedora/Documents/DeberPokemon/Pokedex/assets/images/';
-			sails.log.info('Perfil: ',params.perfil);
+			sails.log.info('Perfil: ', params.perfil);
 
 			req.file('perfil').upload({
 					// don't allow the total upload size to exceed ~10MB
@@ -20,6 +19,7 @@ module.exports = {
 					if (err) {
 							return res.negotiate(err);
 					}
+
 					// If no files were uploaded, respond with an error.
 					if (uploadedFiles.length === 0) {
 							return res.badRequest('No file was uploaded');
@@ -27,22 +27,26 @@ module.exports = {
 
 					console.log(uploadedFiles[0]);
 					var urlImagen = uploadedFiles[0].fd.replace(deleteFd, "");
+					var avatarUrl = require('util').format('%s/user/avatar/%s', sails.getBaseUrl(), req.session.user.id);
 					// Save the "fd" and the url where the avatar for a user can be accessed
 					Usuarios.update(req.session.me, {
 
 									// Generate a unique URL where the avatar can be downloaded.
-									avatarUrl: require('util').format('%s/user/avatar/%s', sails.getBaseUrl(), req.session.me),
+									avatarUrl: avatarUrl,
 
 									// Grab the first file and use it's `fd` (file descriptor)
 									avatarFd: uploadedFiles[0].fd,
 
-									url:urlImagen
+									url: urlImagen
 							})
 							.exec(function (err) {
 									if (err) return res.negotiate(err);
-									req.session.user.url = urlImagen;
-									return res.redirect('http://localhost:1337/usuario');
+									req.session.user.avatarUrl = avatarUrl;
+									return res.redirect('/usuario');
 							});
+
+					sails.log.info("urlImagen ", urlImagen);
+					sails.log.info("req.session.me: ", req.session.me);
 			});
 	},
 
@@ -52,7 +56,7 @@ module.exports = {
 	 *
 	 * (GET /user/avatar/:id)
 	 */
-	descargarFoto: function (req, res) {
+	avatar: function (req, res) {
 
 			req.validate({
 					id: 'string'
@@ -69,7 +73,7 @@ module.exports = {
 					}
 
 					var SkipperDisk = require('skipper-disk');
-					var fileAdapter = SkipperDisk( /* optional opts */ );
+					var fileAdapter = SkipperDisk(/* optional opts */);
 
 					// Stream the file down
 					fileAdapter.read(user.avatarFd)
@@ -80,19 +84,17 @@ module.exports = {
 			});
 	},
 	home: function (req, res) {
-
 			var user;
-
-			Usuarios.find()
+			Usuarios.find().populate('pokemons')
 					.exec(function (err, results) {
-					if (err) return res.negotiate();
+							if (err) return res.negotiate();
 
-					user = results;
+							user = results;
 
-					return res.view('homepage', {
-							usuarios: user,
+							return res.view('homepage', {
+									usuarios: user,
+							});
 					});
-			});
 
 	}
 };
